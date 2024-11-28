@@ -2,4 +2,4 @@
 # following the pattern of the JointTrajectory message
 CartesianPoint point
 
-duration time_from_start
+builtin_interfaces/Duration time_from_start

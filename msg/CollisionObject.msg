@@ -1,5 +1,5 @@
 # A header, used for interpreting the poses
-Header header
+std_msgs/Header header
 
 # The object's pose relative to the header frame.
 # The shapes and subframe poses are defined relative to this pose.

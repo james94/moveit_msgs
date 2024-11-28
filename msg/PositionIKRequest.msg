@@ -44,4 +44,4 @@ string[] ik_link_names
 geometry_msgs/PoseStamped[] pose_stamped_vector
 
 # Maximum allowed time for IK calculation
-duration timeout
+builtin_interfaces/Duration timeout

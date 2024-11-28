@@ -3,7 +3,7 @@ project(moveit_msgs)
 
 set(MSG_DEPS
   std_msgs
-  actionlib_msgs
+  # actionlib_msgs
   sensor_msgs
   geometry_msgs
   trajectory_msgs
@@ -11,7 +11,18 @@ set(MSG_DEPS
   object_recognition_msgs
   octomap_msgs)
 
-find_package(catkin REQUIRED COMPONENTS message_generation ${MSG_DEPS})
+#find_package(catkin REQUIRED COMPONENTS message_generation ${MSG_DEPS})
+
+#find_package(ament_cmake REQUIRED COMPONENTS rosidl_default_generators ${MSG_DEPS})
+
+find_package(ament_cmake REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+find_package(builtin_interfaces REQUIRED)
+
+foreach(dep ${MSG_DEPS})
+  find_package(${dep} REQUIRED)
+endforeach()
+
 
 set(MSG_FILES
 AllowedCollisionEntry.msg
@@ -62,6 +73,11 @@ KinematicSolverInfo.msg
 PositionIKRequest.msg
 )
 
+set(MSG_FILES_WITH_PATH "")
+foreach(file ${MSG_FILES})
+  list(APPEND MSG_FILES_WITH_PATH "msg/${file}")
+endforeach()
+
 set(SRV_FILES
 GetMotionPlan.srv
 ExecuteKnownTrajectory.srv
@@ -89,6 +105,11 @@ ChangeControlDimensions.srv
 ChangeDriftDimensions.srv
 )
 
+set(SRV_FILES_WITH_PATH "")
+foreach(file ${SRV_FILES})
+  list(APPEND SRV_FILES_WITH_PATH "srv/${file}")
+endforeach()
+
 set(ACT_FILES
 ExecuteTrajectory.action
 MoveGroup.action
@@ -97,10 +118,25 @@ Pickup.action
 Place.action
 )
 
-add_action_files(DIRECTORY action FILES ${ACT_FILES})
-add_message_files(DIRECTORY msg FILES ${MSG_FILES})
-add_service_files(DIRECTORY srv FILES ${SRV_FILES})
+set(ACT_FILES_WITH_PATH "")
+foreach(file ${ACT_FILES})
+  list(APPEND ACT_FILES_WITH_PATH "action/${file}")
+endforeach()
 
-generate_messages(DEPENDENCIES ${MSG_DEPS})
+#add_action_files(DIRECTORY action FILES ${ACT_FILES})
+#add_message_files(DIRECTORY msg FILES ${MSG_FILES})
+#add_service_files(DIRECTORY srv FILES ${SRV_FILES})
 
-catkin_package(CATKIN_DEPENDS message_runtime ${MSG_DEPS})
+#generate_messages(DEPENDENCIES ${MSG_DEPS})
+
+## Generate services in the 'srv' folder
+rosidl_generate_interfaces(${PROJECT_NAME}
+  ${SRV_FILES_WITH_PATH}
+  ${MSG_FILES_WITH_PATH}
+  ${ACT_FILES_WITH_PATH}
+  DEPENDENCIES builtin_interfaces ${MSG_DEPS}
+)
+
+#catkin_package(CATKIN_DEPENDS message_runtime ${MSG_DEPS})
+
+ament_package()
